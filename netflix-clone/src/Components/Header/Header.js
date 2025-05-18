@@ -1,5 +1,11 @@
 import React from 'react'
 import "./Header.css"
+import NetflixLogo from '../../assets/NetflixLogo.jpeg'
+import SearchIcon from '@mui/icons-material/Search'
+import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone'
+import AccountBoxIcon from '@mui/icons-material/AccountBox'
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
+
 
 const Header = () => {
   return (
