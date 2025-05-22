@@ -29,7 +29,6 @@
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
-    "base": "/netflix-clone-2024",
     "extends": [
       "react-app",
       "react-app/jest"

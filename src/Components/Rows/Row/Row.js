@@ -11,14 +11,16 @@ const Row = ({ title, fetchUrl, isLargeRow }) => {
   const [trailerUrl, setTrailerUrl] = useState('');
 
   useEffect(() => {
-    (async () => {
+    const fetchMovies = async () => {
       try {
-        const request = await axios.get(fetchUrl);
-        setMovies(request.data.results);
+        const response = await axios.get(fetchUrl);
+        setMovies(response.data.results);
       } catch (error) {
-        console.log('error', error);
+        console.error('Failed to fetch movies:', error);
       }
-    })();
+    };
+
+    fetchMovies();
   }, [fetchUrl]);
 
   const handleClick = (movie) => {
@@ -30,7 +32,7 @@ const Row = ({ title, fetchUrl, isLargeRow }) => {
           const urlParams = new URLSearchParams(new URL(url).search);
           setTrailerUrl(urlParams.get('v'));
         })
-        .catch((error) => console.log('Trailer not found:', error));
+        .catch((error) => console.error('Trailer not found:', error));
     }
   };
 
@@ -46,20 +48,26 @@ const Row = ({ title, fetchUrl, isLargeRow }) => {
     <div className="row">
       <h2>{title}</h2>
       <div className="row_posters">
-        {movies?.length > 0 &&
-          movies.map((movie, index) => (
-            <img
-              key={index}
-              onClick={() => handleClick(movie)}
-              className={`row_poster ${isLargeRow ? 'row_posterLarge' : ''}`}
-              src={`${base_url}${isLargeRow ? movie.poster_path : movie.backdrop_path}`}
-              alt={movie.name || movie.title}
-            />
-          ))}
+        {movies.map((movie) => (
+          <img
+            key={movie.id}
+            onClick={() => handleClick(movie)}
+            className={`row_poster ${isLargeRow ? 'row_posterLarge' : ''}`}
+            src={`${base_url}${isLargeRow ? movie.poster_path : movie.backdrop_path}`}
+            alt={movie.name || movie.title || 'Movie'}
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = 'https://via.placeholder.com/300x450?text=No+Image';
+            }}
+          />
+        ))}
       </div>
-      <div style={{ padding: '40px' }}>
-        {trailerUrl && <YouTube videoId={trailerUrl} opts={opts} />}
-      </div>
+
+      {trailerUrl && (
+        <div style={{ padding: '40px' }}>
+          <YouTube videoId={trailerUrl} opts={opts} />
+        </div>
+      )}
     </div>
   );
 };
